@@ -1,20 +1,24 @@
 # App based in node 18
-FROM node:20-alpine
+FROM node:20-alpine as builder
 
-# Set work dir /coreserver
+# Copy package.json and pnpm-lock.yaml for the dependencies
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+# Install pnpm globally
+RUN npm i -g pnpm
+
+# Install pnpm modules
+RUN pnpm i
+
+# Set work dir /f1server
 WORKDIR /f1server
 
-# Copy files in /coreserver
+# # Copy files in /f1server
 COPY ./ /f1server
-
-# Install npm modules
-RUN npm install
-
-# Rebuild npm packages
-RUN npm rebuild
 
 # Expose 9000 port
 EXPOSE 9000
 
-# Run command npm start
-CMD ["npm", "start"]
+# Run command pnpm start
+CMD ["pnpm", "start"]
